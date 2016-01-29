@@ -165,10 +165,10 @@ nnoremap N Nzz 		" Find previous search term using N
 
 " Set Spellchecking options {{{1
 autocmd BufRead,BufNewFile *.tex call texSpellingOptions()
-autocmd FileType *.md setlocal spell
-autocmd FileType gitcommit setlocal spell
+autocmd BufRead,BufNewFile *.md setlocal spell | 
+"autocmd FileType gitcommit call texSpellingOptions()
 function TexSpellingOptions()
-	setlocal spell
+	"setlocal spell
 	setlocal spelllang=en_gb spell
 	let g:tex_comment_nospell=1
 endfunction
@@ -181,11 +181,12 @@ endfunction
 "autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 "autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 set foldenable
-set foldmethod=indent
+set foldmethod=syntax
+let r_syntax_folding = 1 
+set foldignore=		" Set ignore to be nothing so that comments are folded
 autocmd FileType python setlocal foldmethod=indent
 autocmd FileType java setlocal foldmethod=indent
-"setlocal foldmethod=marker
-set foldignore=		" Set ignore to be nothing so that comments are folded
+autocmd FileType bash setlocal foldmethod=syntax
 set foldnestmax=1
 nnoremap f za 		" Map fold toggle to f
 "vnoremap f zf		" Map visual folding to f
