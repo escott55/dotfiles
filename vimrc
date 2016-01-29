@@ -170,6 +170,20 @@ nnoremap n nzz 		" Find next search term using n
 nnoremap N Nzz 		" Find previous search term using N
 "}}}
 
+" Set Syntastic recommended settings {{{1
+" Help with Syntastic
+" http://vimawesome.com/plugin/syntastic
+" :help syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+" }}}
+
 " Set Spellchecking options {{{1
 autocmd BufRead,BufNewFile *.tex call texSpellingOptions()
 autocmd BufRead,BufNewFile *.md setlocal spell | 
