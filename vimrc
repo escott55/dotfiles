@@ -3,6 +3,9 @@
 "
 "   This is the personal .vimrc file of Eric Scott.
 "
+"   Online example vimrc files were helpful in constructing this file
+"   mcandre has some pragmatic mappings and an organized set of options
+"   https://github.com/mcandre/dotfiles/blob/master/.vimrc
 " }}}
 
 "############################# VUNDLE SETTINGS #################################
@@ -153,8 +156,12 @@ endfunction
 nmap <F9> mz:execute TabToggle()<CR>'z
 "}}}
 
-" Set Highlight search on{{{1
+" Set Highlighting Options{{{1
 set hlsearch
+
+" Column 80 marker
+highlight OverLength ctermbg=darkred ctermfg=white guibg=#660000
+match OverLength /\%81v.\+/
 "}}}
 
 " Remap keyboard common commands to simpler keys {{{1
@@ -180,14 +187,20 @@ endfunction
 "let g:SimpylFold_docstring_preview = 1
 "autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 "autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
-set foldenable
 set foldmethod=syntax
-let r_syntax_folding = 1 
-set foldignore=		" Set ignore to be nothing so that comments are folded
-autocmd FileType python setlocal foldmethod=indent
-autocmd FileType java setlocal foldmethod=indent
-autocmd FileType bash setlocal foldmethod=syntax
 set foldnestmax=1
+set foldignore=		" Set ignore to be nothing so that comments are folded
+
+let g:vim_markdown_folding_disabled=1 " Markdown
+let javaScript_fold=1                 " JavaScript
+let perl_fold=1                       " Perl
+let php_folding=1                     " PHP
+let r_syntax_folding=1                " R
+let ruby_fold=1                       " Ruby
+
+"autocmd FileType python setlocal foldmethod=indent
+"autocmd FileType java setlocal foldmethod=indent
+"autocmd FileType bash setlocal foldmethod=syntax
 nnoremap f za 		" Map fold toggle to f
 "vnoremap f zf		" Map visual folding to f
 "}}}
@@ -197,6 +210,8 @@ nnoremap f za 		" Map fold toggle to f
 "let g:airline_section_y = 'BN: %{bufnr("%")}'
 set laststatus=2 	" Has to be on for some reason
 set ttimeoutlen=50	" Refersh time
+let g:airline_powerline_fonts = 1
+let g:airline_theme='distinguished'
 "}}}
 
 " NERD commenter configuration. Mostly key remappings {{{1
