@@ -1,0 +1,1 @@
+/home/escott/git/dotfiles/.vim
