@@ -8,8 +8,6 @@ in `~/git/dotfiles/`.
 The install script will create symlinks to the dotfiles in `~/git/dotfiles/`
 in your home directory
 
-somethinm 
-
 Installation
 ------------
 

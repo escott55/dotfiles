@@ -165,6 +165,7 @@ nnoremap N Nzz 		" Find previous search term using N
 
 " Set Spellchecking options {{{1
 autocmd BufRead,BufNewFile *.tex call texSpellingOptions()
+autocmd FileType *.md setlocal spell
 autocmd FileType gitcommit setlocal spell
 function TexSpellingOptions()
 	setlocal spell
