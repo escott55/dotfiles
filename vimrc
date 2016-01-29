@@ -54,6 +54,10 @@ Plugin 'Valloric/YouCompleteMe'
 " defines a shortcut for goto definition
 "map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+" Source code browser for c/c++,java,perl,python,tcl,sql,php
+Plugin 'taglist.vim'
+map <F4> :TlistToggle<cr>
+
 " Upgraded status tabline
 Plugin 'bling/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -131,11 +135,6 @@ colorscheme hybrid
 "colorscheme solarized
 "}}}
 
-" Flag unnecessary whitespace {{{1
-highlight ExtraWhitespace ctermbg=red guibg=darkred
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match ExtraWhitespace /\s\+$/
-"}}}
-
 " Toggle ability to Paste Code without automatic indentation {{{1
 set pastetoggle=<F3>
 "}}}
@@ -156,13 +155,17 @@ endfunction
 nmap <F9> mz:execute TabToggle()<CR>'z
 "}}}
 
-" Set Highlighting Options{{{1
+" Set Highlighting Options {{{1
 set hlsearch
-
-" Column 80 marker
+" Highligh characters after column 80 marker {{{2
 highlight OverLength ctermbg=darkred ctermfg=white guibg=#660000
 match OverLength /\%81v.\+/
-"}}}
+" }}}
+" Flag unnecessary whitespace {{{2
+highlight ExtraWhitespace ctermbg=red guibg=darkred
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match ExtraWhitespace /\s\+$/
+" }}}
+" }}}
 
 " Remap keyboard common commands to simpler keys {{{1
 nnoremap <space> zz	" Map recenter to space
