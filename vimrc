@@ -25,7 +25,8 @@
 
 " Initialize Vundle {{{1
 " https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
-" https://www.digitalocean.com/community/tutorials/how-to-use-vundle-to-manage-vim-plugins-on-a-linux-vps
+" https://www.digitalocean.com/community/tutorials/
+" how-to-use-vundle-to-manage-vim-plugins-on-a-linux-vps
 set nocompatible              " required
 
 " vundle needs filtype plugins off
@@ -55,8 +56,18 @@ Plugin 'Valloric/YouCompleteMe'
 "map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " Source code browser for c/c++,java,perl,python,tcl,sql,php
-Plugin 'taglist.vim'
-map <F4> :TlistToggle<cr>
+"Plugin 'taglist.vim'
+"map <F4> :TlistToggle<cr>
+
+" Class outliner viewer
+Plugin 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+
+" Markdown Vim Mode
+" Syntax highlighting, matching rules and mappings for the original Markdown
+" and extensions.
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
 
 " Upgraded status tabline
 Plugin 'bling/vim-airline'
@@ -199,14 +210,9 @@ endfunction
 " }}}
 
 " Folding code configuration {{{1
-" SimpylFold was a bit too simple...
-" https://github.com/tmhedberg/SimpylFold " :help fold-commands 
-"let g:SimpylFold_docstring_preview = 1
-"autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-"autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 set foldmethod=syntax
 set foldnestmax=1
-set foldignore=		" Set ignore to be nothing so that comments are folded
+set foldignore=		    " Set ignore to be nothing so that comments are folded
 
 let g:vim_markdown_folding_disabled=1 " Markdown
 let javaScript_fold=1                 " JavaScript
@@ -214,13 +220,13 @@ let perl_fold=1                       " Perl
 let php_folding=1                     " PHP
 let r_syntax_folding=1                " R
 let ruby_fold=1                       " Ruby
+autocmd FileType python setlocal foldmethod=indent
 
-"autocmd FileType python setlocal foldmethod=indent
 "autocmd FileType java setlocal foldmethod=indent
 "autocmd FileType bash setlocal foldmethod=syntax
 nnoremap f za 		" Map fold toggle to f
 "vnoremap f zf		" Map visual folding to f
-"}}}
+" }}}
 
 " Airline configuration {{{1
 "let g:airline_section_b = '%{strftime("%c")}'
@@ -238,6 +244,12 @@ nmap <silent> <C-X> \cu " Map uncommenting to control x
 nmap <silent> <C-A> \ca " Map comment appending to control a
 vmap <silent> <C-C> \cs " Map visual commenting to control c
 vmap <silent> <C-X> \cu " Map uncommenting to control x
+" }}}
+
+" Tagbar configuration {{{1
+" :help tagbar
+let g:tagbar_autofocus=1    " Jump to tagbar window
+let g:tagbar_autoclose=1    " Close tagbar on selection
 " }}}
 
 " ~/.vimrc ends here
