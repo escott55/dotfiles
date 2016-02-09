@@ -8,6 +8,20 @@
 "   https://github.com/mcandre/dotfiles/blob/master/.vimrc
 " }}}
 
+"######################################################################################
+
+"#################
+" Toggle Modes
+" F2 - NERDTreeToggle
+" F3 - PasteToggle
+" F4 - <Not used> # Used to be TlistToggle
+" F5 - SyntasticTogglemode
+" F6 - <Not used>
+" F7 - <Not used>
+" F8 - TagbarToggle
+" F9 - TabToggle
+"#################
+
 "############################# VUNDLE SETTINGS #################################
 
 " Plugin Install Help {{{1
@@ -46,7 +60,7 @@ Plugin 'gmarik/Vundle.vim'
 
 " filesystem navigation The-NERD-tree
 Plugin 'scrooloose/nerdtree.git'
-map <F2> :NERDTreeToggle<cr>
+map <F2> :NERDTreeToggle<CR>
 
 " Auto-complete
 Plugin 'Valloric/YouCompleteMe'
@@ -70,7 +84,7 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 
 " Upgraded status tabline
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
 " provide tab completion to satisfy all your insert completion needs
@@ -109,10 +123,10 @@ Plugin 'w0ng/vim-hybrid'
 " BadWolf colorscheme
 Plugin 'sjl/badwolf'
 
-call vundle#end()            
+call vundle#end()
 " }}} End Plugin initialization
 
-filetype plugin indent on    
+filetype plugin indent on
 syntax on
 " }}} Vundle End
 
@@ -126,6 +140,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set autoindent
+set smartindent
 set fileformat=unix
 set encoding=utf-8
 "set textwidth=79 " Limit the width of the code to 80 characters...
@@ -153,59 +168,92 @@ set pastetoggle=<F3>
 " Toggle Tabs - allowing space and default tabs {{{1
 " allow toggling between local and default mode
 function! TabToggle()
-  if &expandtab
-    set shiftwidth=8
-    set softtabstop=0
-    set noexpandtab
-  else
-    execute "set shiftwidth=".g:my_tab
-    execute "set softtabstop=".g:my_tab
-    set expandtab
-  endif
+    if &expandtab
+        set shiftwidth=8
+        set softtabstop=0
+        set noexpandtab
+    else
+        execute "set shiftwidth=".g:my_tab
+        execute "set softtabstop=".g:my_tab
+        set expandtab
+    endif
 endfunction
+
 nmap <F9> mz:execute TabToggle()<CR>'z
 "}}}
 
 " Set Highlighting Options {{{1
 set hlsearch
 " Highligh characters after column 80 marker {{{2
-highlight OverLength ctermbg=darkred ctermfg=white guibg=#660000
-match OverLength /\%81v.\+/
+"autocmd BufRead,BufNewFile *.py call ColumnLimitHL()
+"autocmd BufRead,BufNewFile *.R call ColumnLimitHL()
+function ColumnLimitHL()
+    highlight OverLength ctermbg=darkred ctermfg=white guibg=#660000
+    match OverLength /\%81v.\+/
+endfunction
 " }}}
 " Flag unnecessary whitespace {{{2
-highlight ExtraWhitespace ctermbg=red guibg=darkred
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match ExtraWhitespace /\s\+$/
+function UnnecessaryWhiteSpace()
+    highlight ExtraWhitespace ctermbg=red guibg=darkred
+    au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match ExtraWhitespace /\s\+$/
+endfunction
 " }}}
 " }}}
 
 " Remap keyboard common commands to simpler keys {{{1
 nnoremap <space> zz	" Map recenter to space
 nnoremap n nzz 		" Find next search term using n
-nnoremap N Nzz 		" Find previous search term using N
+"nnoremap N Nzz 		" Find previous search term using N
 "}}}
 
 " Set Syntastic recommended settings {{{1
 " Help with Syntastic
 " http://vimawesome.com/plugin/syntastic
 " :help syntastic
+" SyntasticInfo - current shows no checkers...
+" Syntastic requires supported syntax checkers
+" pip install flake8 # Python syntax check
+" apt-get install svtools # For R code uses lint
+" apt-get install shellcheck  # bash
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 2 " also could be 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_balloons = 0
+let g:syntastic_error_symbol = '!'
+let g:syntastic_ignore_files = []  " Example - '\.min\.js$'
+let g:syntastic_loc_list_height = 5
+"let g:syntastic_warning_symbol = '!' " Change symbols
+"let g:syntastic_style_error_symbol = '!'
+"let g:syntastic_style_warning_symbol = '!'
+" If svtools are installed
+let g:syntastic_enable_r_svtools_checker = 1
+
+let g:syntastic_html_checkers = []
+let g:syntastic_java_checkers = []
+let g:syntastic_javascript_checkers = []
+let g:syntastic_json_checkers = ['']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_r_checkers = ['svtools']
+let g:syntastic_ruby_checkers = ['']
+let g:syntastic_sh_checkers = ['shellcheck']
+
+" Todo - syntastic toggle
+map <F5> :SyntasticTogglemode<CR>
 " }}}
 
 " Set Spellchecking options {{{1
 autocmd BufRead,BufNewFile *.tex call texSpellingOptions()
-autocmd BufRead,BufNewFile *.md setlocal spell | 
+autocmd BufRead,BufNewFile *.md setlocal spell
 "autocmd FileType gitcommit call texSpellingOptions()
 function TexSpellingOptions()
-	"setlocal spell
-	setlocal spelllang=en_gb spell
-	let g:tex_comment_nospell=1
+    "setlocal spell
+    setlocal spelllang=en_gb spell
+    let g:tex_comment_nospell=1
 endfunction
 " }}}
 
@@ -221,7 +269,6 @@ let php_folding=1                     " PHP
 let r_syntax_folding=1                " R
 let ruby_fold=1                       " Ruby
 autocmd FileType python setlocal foldmethod=indent
-
 "autocmd FileType java setlocal foldmethod=indent
 "autocmd FileType bash setlocal foldmethod=syntax
 nnoremap f za 		" Map fold toggle to f
@@ -234,11 +281,13 @@ nnoremap f za 		" Map fold toggle to f
 set laststatus=2 	" Has to be on for some reason
 set ttimeoutlen=50	" Refersh time
 let g:airline_powerline_fonts = 1
-let g:airline_theme='distinguished'
+let g:airline_theme = 'hybrid'  " aka 'distinguished'
 "}}}
 
 " NERD commenter configuration. Mostly key remappings {{{1
 " http://vimawesome.com/plugin/the-ner d-commenter
+let g:NERDSpaceDelims = 0
+let g:NERDRemoveExtraSpaces = 1
 nmap <silent> <C-C> \cs " Map commenting to control c
 nmap <silent> <C-X> \cu " Map uncommenting to control x
 nmap <silent> <C-A> \ca " Map comment appending to control a
