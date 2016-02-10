@@ -3,38 +3,67 @@
 "
 "   This is the personal .vimrc file of Eric Scott.
 "
+"   Install this vimrc file
+"   mkdir .vim
+"   mkdir .vim/bundle
+"   git clone https://github.com/VundleVim/Vundle.vim.git \
+"   ~/.vim/bundle/Vundle.vim
+"   sudo apt-get install cmake
+"   :PluginInstall
+"  
+"   if git is unable to resolve host, it is likely a proxy problem
+"   git config --global --unset https.proxy
+"   if ycmd gives an error run: 
+"   python vim/bundle/YouCompleteMe/third_party/ycmd/build.py
+"
+"   Install Syntastic checkers for each language used
+"   Python -> pip install flake8 
+"   R      -> apt-get install svtools
+"   Bash   -> apt-get install shellcheck
+"
 "   Online example vimrc files were helpful in constructing this file
 "   mcandre has some pragmatic mappings and an organized set of options
 "   https://github.com/mcandre/dotfiles/blob/master/.vimrc
 " }}}
 
-"######################################################################################
+"##############################################################################
+" Todo
+" Add automatic whitespace cleaning
+" Learn how to use multiple windows or tabs
+" The bracket highlight seems funny. Should flash the opposite bracket, not
+" the cursor bracket.
 
+" Current Toggle Modes {{{1
 "#################
-" Toggle Modes
-" F2 - NERDTreeToggle
-" F3 - PasteToggle
-" F4 - <Not used> # Used to be TlistToggle
-" F5 - SyntasticTogglemode
-" F6 - <Not used>
-" F7 - <Not used>
-" F8 - TagbarToggle
-" F9 - TabToggle
-"#################
+" F2 - NERDTreeToggle       (Folder hierarchy)
+" F3 - PasteToggle          (Turn off autoindent for paste)
+" F4 - <empty>              # Used to be TlistToggle
+" F5 - SyntasticTogglemode  (Toggle syntax checking)
+" F6 - <empty>
+" F7 - <empty>
+" F8 - TagbarToggle         (class and function heirarchy)
+" F9 - TabToggle            (Tab versus spaces)
+"################# }}}
 
 "############################# VUNDLE SETTINGS #################################
 
-" Plugin Install Help {{{1
-"steps to install a plugin
+" Vundle Help {{{1
+" Steps to install a plugin
 "  1. add it to you .vimrc between call vundle#begin() and call vundle#end()
 "  2. save the .vimrc
 "  3. type <ESC>:PluginInstall<CR>
-"to update the plugins
+" To update the plugins
 "  1. type <ESC>:PluginInstall!<CR> or <ESC>:PluginUpdate<CR>
-" to remove a plugin
+" To remove a plugin
 "  1. remove it from the .vimrc
 "  2. save the .vimrc
 "  3.type <ESC>:PluginClean<CR>
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to
+"  auto-approve removal
 "  }}}
 
 " Initialize Vundle {{{1
@@ -184,19 +213,21 @@ nmap <F9> mz:execute TabToggle()<CR>'z
 
 " Set Highlighting Options {{{1
 set hlsearch
+
 " Highligh characters after column 80 marker {{{2
-"autocmd BufRead,BufNewFile *.py call ColumnLimitHL()
-"autocmd BufRead,BufNewFile *.R call ColumnLimitHL()
+" Redundant with *working* syntax checker
+autocmd BufRead,BufNewFile *.R,*.sh call ColumnLimitHL()
 function ColumnLimitHL()
     highlight OverLength ctermbg=darkred ctermfg=white guibg=#660000
     match OverLength /\%81v.\+/
 endfunction
 " }}}
 " Flag unnecessary whitespace {{{2
-function UnnecessaryWhiteSpace()
-    highlight ExtraWhitespace ctermbg=red guibg=darkred
-    au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match ExtraWhitespace /\s\+$/
-endfunction
+"autocmd BufRead,BufNewFile *.R call UnnecessaryWhiteSpace()
+"function UnnecessaryWhiteSpace()
+highlight ExtraWhitespace ctermbg=red guibg=darkred
+au BufRead,BufNewFile *.c,*.h,*.R match ExtraWhitespace /\s\+$/
+"endfunction
 " }}}
 " }}}
 
@@ -206,15 +237,11 @@ nnoremap n nzz 		" Find next search term using n
 "nnoremap N Nzz 		" Find previous search term using N
 "}}}
 
-" Set Syntastic recommended settings {{{1
+" Syntastic settings {{{1
 " Help with Syntastic
 " http://vimawesome.com/plugin/syntastic
 " :help syntastic
-" SyntasticInfo - current shows no checkers...
-" Syntastic requires supported syntax checkers
-" pip install flake8 # Python syntax check
-" apt-get install svtools # For R code uses lint
-" apt-get install shellcheck  # bash
+" :SyntasticInfo - shows available checkers
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -230,7 +257,8 @@ let g:syntastic_loc_list_height = 5
 "let g:syntastic_warning_symbol = '!' " Change symbols
 "let g:syntastic_style_error_symbol = '!'
 "let g:syntastic_style_warning_symbol = '!'
-" If svtools are installed
+
+" Todo - Fix svtools checker
 let g:syntastic_enable_r_svtools_checker = 1
 
 let g:syntastic_html_checkers = []
@@ -242,7 +270,6 @@ let g:syntastic_r_checkers = ['svtools']
 let g:syntastic_ruby_checkers = ['']
 let g:syntastic_sh_checkers = ['shellcheck']
 
-" Todo - syntastic toggle
 map <F5> :SyntasticTogglemode<CR>
 " }}}
 
@@ -286,12 +313,16 @@ let g:airline_theme = 'hybrid'  " aka 'distinguished'
 
 " NERD commenter configuration. Mostly key remappings {{{1
 " http://vimawesome.com/plugin/the-ner d-commenter
+" This program looks like it adds spaces to comments differently
+" across different languages, python has spaces, R doesnt.
 let g:NERDSpaceDelims = 0
 let g:NERDRemoveExtraSpaces = 1
-nmap <silent> <C-C> \cs " Map commenting to control c
+
+" Key mapping
+nmap <silent> <C-C> \cs " Map "sexy" commenting to control c
 nmap <silent> <C-X> \cu " Map uncommenting to control x
 nmap <silent> <C-A> \ca " Map comment appending to control a
-vmap <silent> <C-C> \cs " Map visual commenting to control c
+vmap <silent> <C-C> \cs " Map visual "sexy" commenting to control c
 vmap <silent> <C-X> \cu " Map uncommenting to control x
 " }}}
 
