@@ -32,6 +32,8 @@
 " Learn how to use multiple windows or tabs
 " The bracket highlight seems funny. Should flash the opposite bracket, not
 " the cursor bracket.
+" Install and setup Fugative - a vim git interface
+" <https://github.com/tpope/vim-fugitive>
 
 " Current Toggle Modes {{{1
 "#################
@@ -89,7 +91,6 @@ Plugin 'gmarik/Vundle.vim'
 
 " filesystem navigation The-NERD-tree
 Plugin 'scrooloose/nerdtree.git'
-map <F2> :NERDTreeToggle<CR>
 
 " Auto-complete
 Plugin 'Valloric/YouCompleteMe'
@@ -161,18 +162,79 @@ syntax on
 
 "########################### CONFIGURATION SETTINGS ############################
 
-" Set Basic Global attributes {{{1
-"set ttyfast " fast terminal connection
-"set number " show number of lines
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set autoindent
-set smartindent
-set fileformat=unix
-set encoding=utf-8
-"set textwidth=79 " Limit the width of the code to 80 characters...
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                            VUNDLE Package Settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" NERDTree configuration {{{1
+map <F2> :NERDTreeToggle<CR>
+let NERDTreeQuitOnOpen=1
+" }}}
+
+" Syntastic settings {{{1
+" Help with Syntastic
+" http://vimawesome.com/plugin/syntastic
+" :help syntastic
+" :SyntasticInfo - shows available checkers
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2 " also could be 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_balloons = 0
+let g:syntastic_error_symbol = '!'
+let g:syntastic_ignore_files = []  " Example - '\.min\.js$'
+let g:syntastic_loc_list_height = 5
+"let g:syntastic_warning_symbol = '!' " Change symbols
+"let g:syntastic_style_error_symbol = '!'
+"let g:syntastic_style_warning_symbol = '!'
+
+" Todo - Fix svtools checker
+let g:syntastic_enable_r_svtools_checker = 1
+
+let g:syntastic_html_checkers = []
+let g:syntastic_java_checkers = []
+let g:syntastic_javascript_checkers = []
+let g:syntastic_json_checkers = ['']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_r_checkers = ['svtools']
+let g:syntastic_ruby_checkers = ['']
+let g:syntastic_sh_checkers = ['shellcheck']
+
+map <F5> :SyntasticTogglemode<CR>
+" }}}
+
+" Airline configuration {{{1
+"let g:airline_section_b = '%{strftime("%c")}'
+"let g:airline_section_y = 'BN: %{bufnr("%")}'
+set laststatus=2 	" Has to be on for some reason
+set ttimeoutlen=50	" Refersh time
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'hybrid'  " aka 'distinguished'
+"}}}
+
+" NERD commenter configuration. Mostly key remappings {{{1
+" http://vimawesome.com/plugin/the-ner d-commenter
+" This program looks like it adds spaces to comments differently
+" across different languages, python has spaces, R doesnt.
+let g:NERDSpaceDelims = 0
+let g:NERDRemoveExtraSpaces = 1
+
+" Key mapping
+nmap <silent> <C-C> \cs " Map "sexy" commenting to control c
+nmap <silent> <C-X> \cu " Map uncommenting to control x
+nmap <silent> <C-A> \ca " Map comment appending to control a
+vmap <silent> <C-C> \cs " Map visual "sexy" commenting to control c
+vmap <silent> <C-X> \cu " Map uncommenting to control x
+" }}}
+
+" Tagbar configuration {{{1
+" :help tagbar
+let g:tagbar_autofocus=1    " Jump to tagbar window
+let g:tagbar_autoclose=1    " Close tagbar on selection
 " }}}
 
 " Color Scheme Settings {{{1
@@ -190,9 +252,43 @@ colorscheme hybrid
 "colorscheme solarized
 "}}}
 
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                         Native Setting Modifications
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Set Basic Global attributes {{{1
+"set ttyfast " fast terminal connection
+"set number " show number of lines
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+set smartindent
+set fileformat=unix
+set encoding=utf-8
+"set textwidth=79 " Limit the width of the code to 80 characters...
+" }}}
+
 " Toggle ability to Paste Code without automatic indentation {{{1
 set pastetoggle=<F3>
 "}}}
+
+" Window/Tab manipulation {{{1
+" We overwrite a key shortcut for jumping between tags
+" Firefox like commands aren't caught by xterm
+" Tab navigation like Firefox.
+"nnoremap <C-S-tab> :tabprevious<CR>
+"nnoremap <C-tab>   :tabnext<CR>
+"inoremap <C-S-tab> <Esc>:tabprevious<CR>i
+"inoremap <C-tab>   <Esc>:tabnext<CR>i
+nnoremap <C-t>     :tabnew<CR>
+inoremap <C-t>     <Esc>:tabnew<CR>
+" New and close
+nnoremap <C-Insert> :tabnew<CR>
+nnoremap <C-Delete> :tabclose<CR>
+" }}}
 
 " Toggle Tabs - allowing space and default tabs {{{1
 " allow toggling between local and default mode
@@ -237,42 +333,6 @@ nnoremap n nzz 		" Find next search term using n
 "nnoremap N Nzz 		" Find previous search term using N
 "}}}
 
-" Syntastic settings {{{1
-" Help with Syntastic
-" http://vimawesome.com/plugin/syntastic
-" :help syntastic
-" :SyntasticInfo - shows available checkers
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2 " also could be 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_enable_balloons = 0
-let g:syntastic_error_symbol = '!'
-let g:syntastic_ignore_files = []  " Example - '\.min\.js$'
-let g:syntastic_loc_list_height = 5
-"let g:syntastic_warning_symbol = '!' " Change symbols
-"let g:syntastic_style_error_symbol = '!'
-"let g:syntastic_style_warning_symbol = '!'
-
-" Todo - Fix svtools checker
-let g:syntastic_enable_r_svtools_checker = 1
-
-let g:syntastic_html_checkers = []
-let g:syntastic_java_checkers = []
-let g:syntastic_javascript_checkers = []
-let g:syntastic_json_checkers = ['']
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_r_checkers = ['svtools']
-let g:syntastic_ruby_checkers = ['']
-let g:syntastic_sh_checkers = ['shellcheck']
-
-map <F5> :SyntasticTogglemode<CR>
-" }}}
-
 " Set Spellchecking options {{{1
 autocmd BufRead,BufNewFile *.tex call texSpellingOptions()
 autocmd BufRead,BufNewFile *.md setlocal spell
@@ -300,36 +360,6 @@ autocmd FileType python setlocal foldmethod=indent
 "autocmd FileType bash setlocal foldmethod=syntax
 nnoremap f za 		" Map fold toggle to f
 "vnoremap f zf		" Map visual folding to f
-" }}}
-
-" Airline configuration {{{1
-"let g:airline_section_b = '%{strftime("%c")}'
-"let g:airline_section_y = 'BN: %{bufnr("%")}'
-set laststatus=2 	" Has to be on for some reason
-set ttimeoutlen=50	" Refersh time
-let g:airline_powerline_fonts = 1
-let g:airline_theme = 'hybrid'  " aka 'distinguished'
-"}}}
-
-" NERD commenter configuration. Mostly key remappings {{{1
-" http://vimawesome.com/plugin/the-ner d-commenter
-" This program looks like it adds spaces to comments differently
-" across different languages, python has spaces, R doesnt.
-let g:NERDSpaceDelims = 0
-let g:NERDRemoveExtraSpaces = 1
-
-" Key mapping
-nmap <silent> <C-C> \cs " Map "sexy" commenting to control c
-nmap <silent> <C-X> \cu " Map uncommenting to control x
-nmap <silent> <C-A> \ca " Map comment appending to control a
-vmap <silent> <C-C> \cs " Map visual "sexy" commenting to control c
-vmap <silent> <C-X> \cu " Map uncommenting to control x
-" }}}
-
-" Tagbar configuration {{{1
-" :help tagbar
-let g:tagbar_autofocus=1    " Jump to tagbar window
-let g:tagbar_autoclose=1    " Close tagbar on selection
 " }}}
 
 " ~/.vimrc ends here
